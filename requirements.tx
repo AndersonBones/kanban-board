@@ -1,0 +1,22 @@
+KANBAN APP
+
+ENTIDADES:
+- BACKLOG 
+- DEVELOPMENT
+- IN QA
+- COMPLETED
+- USER
+
+FUNCIONALIDADES:
+ - Mover os cards entre os quadros 
+ - adicionar card
+ - definir/editar titulo do card
+ - adicionar comentario ao card
+ - remover card
+
+AUTENTICAÇÃO:
+ - Register/login GOOGLE
+ - Register/OAUTH
+
+DATABASE:
+ - MYSQL
