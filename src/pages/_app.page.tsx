@@ -1,4 +1,4 @@
-import RootLayout from "@/components/Layout";
+import {RootLayout} from "@/components/Layout";
 import { KanbanContextProvider } from "@/contexts/kanban";
 import { globalStyles } from "@/styles/globals";
 
@@ -8,7 +8,6 @@ import { Theme } from '@radix-ui/themes';
 
 globalStyles()
 
-import { PrimeReactProvider } from 'primereact/api';
 
 
 const roboto = Roboto({ subsets: ["latin"], weight: "400" })
@@ -18,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <KanbanContextProvider>
       <RootLayout>
         <Theme>
+          <title>Kanban Board</title>
           <Component className={roboto.className} {...pageProps} />
         </Theme>
         

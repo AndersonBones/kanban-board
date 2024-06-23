@@ -1,4 +1,4 @@
-import { KanbanBoardType, KanbanContextInterface, KanbanContextProps, KanbanData } from "@/types/kanban";
+import { KanbanBoardType, KanbanContextInterface, KanbanContextProps, KanbanData, KanbanToggle, TogglesInterface } from "@/types/kanban";
 import { createContext, useEffect, useState } from "react";
 
 import { v4 as uuidv4 } from 'uuid';
@@ -10,43 +10,64 @@ export const KanbanContext = createContext({} as KanbanContextProps)
 
 export const KanbanContextProvider = ({children}:KanbanContextInterface)=>{
 
+    const [toggles, setToggle] = useState<TogglesInterface>({
+        Backlog: "",
+        inDev:"",
+        inQA:"",
+        Completed:""
+
+    })
+
+    
     const [kanban, setTask] = useState<KanbanData>(
         {
             Backlog:{
-                id:{board:"Backlog"},
+                id:"Backlog",
                 tasks:[{
-                    cardId:uuidv4(),
-                    taskName:"task1"
+                    TaskId:uuidv4(),
+                    taskName:""
                 }]
             },
             inDev:{
-                id:{board:"inDev"},
+                id:"inDev",
                 tasks:[{
-                    cardId:uuidv4(),
-                    taskName:"task1"
+                    TaskId:uuidv4(),
+                    taskName:""
                 }]
             },
             inQA:{
-                id:{board:"inQA"},
+                id:"inQA",
                 tasks:[{
-                    cardId:uuidv4(),
-                    taskName:"task1"
+                    TaskId:uuidv4(),
+                    taskName:""
                 }]
             },
             Completed:{
-                id:{board:"Completed"},
+                id:"Completed",
                 tasks:[{
-                    cardId:uuidv4(),
-                    taskName:"task1"
+                    TaskId:uuidv4(),
+                    taskName:""
                 }]
             }
         })
 
-    const handleAddTask = ({board}:KanbanBoardType, taskName:string)=>{
+    
+    const handleToggle = (status:KanbanToggle, board?:KanbanBoardType)=>{
+
+        if(board){
+            let newToggles = {...toggles}
+            newToggles[board] = status
+
+            setToggle(newToggles)
+        }
+        
+    }
+
+    const handleAddTask = (board:KanbanBoardType, taskName:string)=>{
         
         let newKanban = {...kanban}
         newKanban[board].tasks.push({
-            cardId:uuidv4(),
+            TaskId:uuidv4(),
             taskName
         })
 
@@ -55,9 +76,25 @@ export const KanbanContextProvider = ({children}:KanbanContextInterface)=>{
     }
 
 
+    const handleRemoveTask = (board:KanbanBoardType, taskId:string)=>{
+        let newKanban = {...kanban}
+        newKanban[board].tasks = newKanban[board].tasks.filter((task)=>task.TaskId != taskId)
+        
+        setTask(newKanban)
+    }
+
+
+
+    useEffect(()=>{
+        console.log(toggles)
+    },[toggles])
+
 
     return (
         <KanbanContext.Provider value={{
+            handleToggle,
+            handleRemoveTask,
+            toggles,
             kanbanData:kanban,
             handleAddTask
         }}>

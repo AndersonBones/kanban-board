@@ -1,17 +1,26 @@
 import { ReactNode } from "react";
 import { KanbanBoard } from "./styles";
 import { KanbanBoardColors } from "@/types/kanban";
+import React from "react";
 
 
 interface KanbanBoardProps{
     children:ReactNode
-    bg: KanbanBoardColors
+    color: KanbanBoardColors
 }
-export default function KanbanBoardElement({children, bg}:KanbanBoardProps){
-    return(
-        <KanbanBoard css={{backgroundColor:bg.color}} >
-            {children}
-            
-        </KanbanBoard>
-    )
+
+export class KanbanBoardComponent extends React.Component<KanbanBoardProps>{
+
+    constructor({color, children}:KanbanBoardProps){
+        super({color, children})
+    }
+    render(): ReactNode {
+        return(
+            <KanbanBoard css={{backgroundColor:this.props.color}} >
+                {this.props.children}
+                
+            </KanbanBoard>
+        )
+    }
+    
 }

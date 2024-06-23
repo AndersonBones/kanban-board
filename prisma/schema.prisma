@@ -13,6 +13,96 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  name         String
+  email        String  @unique
+  password     String  @unique
+  refreshToken String?
+  board        Board   @relation(fields: [boardId], references: [id])
+  boardId      String
+}
+
+model BacklogTasks {
+  taskId    String @id @default(uuid())
+  taskTitle String @db.Text
+
+  Backlog   Backlog? @relation(fields: [backlogId], references: [id])
+  backlogId String?
+
+  @@map("backlogTasks")
+}
+
 model Backlog {
-  id String @id @default(uuid())
+  id      String         @id @default(uuid())
+  tasks   BacklogTasks[]
+  Board   Board?         @relation(fields: [boardId], references: [id])
+  boardId String?
+
+  @@map("backlog")
+}
+
+model InDevTasks {
+  taskId    String @id @default(uuid())
+  taskTitle String @db.Text
+
+  InDev   InDev?  @relation(fields: [inDevId], references: [id])
+  inDevId String?
+
+  @@map("inDevTasks")
+}
+
+model InDev {
+  id               String       @id @default(uuid())
+  tasks            InDevTasks[]
+  inDevTasksTaskId String
+  Board            Board?       @relation(fields: [boardId], references: [id])
+  boardId          String?
+
+  @@map("inDev")
+}
+
+model InQaTasks {
+  taskId    String @id @default(uuid())
+  taskTitle String @db.Text
+
+  InQA   InQa?   @relation(fields: [inQAId], references: [id])
+  inQAId String?
+
+  @@map("inQaTasks")
+}
+
+model InQa {
+  id      String      @id @default(uuid())
+  tasks   InQaTasks[]
+  Board   Board?      @relation(fields: [boardId], references: [id])
+  boardId String?
+
+  @@map("inQA")
+}
+
+model CompletedTasks {
+  taskId      String     @id @default(uuid())
+  taskTitle   String     @db.Text
+  Completed   Completed? @relation(fields: [completedId], references: [id])
+  completedId String?
+
+  @@map("completedTasks")
+}
+
+model Completed {
+  id      String           @id @default(uuid())
+  tasks   CompletedTasks[]
+  Board   Board?           @relation(fields: [boardId], references: [id])
+  boardId String?
+
+  @@map("completed")
+}
+
+model Board {
+  id        String      @id @default(uuid())
+  backlog   Backlog[]
+  indev     InDev[]
+  inqa      InQa[]
+  completed Completed[]
+  User      User[]
 }

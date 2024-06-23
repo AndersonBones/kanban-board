@@ -1,21 +1,26 @@
 import { ReactNode } from "react"
 
-export interface KanbanBoardColors{
-    color: "$linkedinBlue" | "$green" | "$yellow" | "$skyBlue"
-}
 
+export type KanbanBoardColors = "$linkedinBlue" | "$green" | "$yellow" | "$skyBlue"
+export type KanbanBoardType = "Backlog" | "inDev" | "inQA" | "Completed"
 
-export interface KanbanBoardType{
-    board: "Backlog" | "inDev" | "inQA" | "Completed"
-}
 export interface KanbanBoardInterface{
     id: KanbanBoardType 
     tasks:KanbanTask[]
 }
 
 export interface KanbanTask{
-    cardId:string
+    TaskId:string
     taskName:string
+}
+
+export type KanbanToggle = "active" | ""
+
+export interface TogglesInterface{
+    Backlog:KanbanToggle
+    inDev:KanbanToggle
+    inQA:KanbanToggle
+    Completed:KanbanToggle
 }
 
 
@@ -28,7 +33,10 @@ export interface KanbanData{
 
 export interface KanbanContextProps{
     kanbanData:KanbanData
+    toggles:TogglesInterface
+    handleRemoveTask: (board:KanbanBoardType, taskId:string)=>void
     handleAddTask: (board:KanbanBoardType, taskName:string)=>void
+    handleToggle: (status:KanbanToggle, board?:KanbanBoardType)=>void
 }
 
 export interface KanbanContextInterface{

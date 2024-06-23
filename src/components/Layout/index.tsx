@@ -1,18 +1,27 @@
 import { ReactNode } from "react";
 import { Container } from "./styles";
-import Footer from "../footer";
+import { Footer } from "../footer";
+import React from "react";
 
-interface Props {
+interface LayoutProps {
     children: ReactNode
 }
 
-export default function RootLayout({ children}:Props){
-    return (
-        <Container>
-            
-            {children}
+export class RootLayout extends React.Component<LayoutProps>{
 
-            <Footer/> 
-        </Container>
-    )
+    constructor({children}:LayoutProps){
+        super({children})
+    }
+
+    render(): ReactNode {
+        return (
+            <Container>
+                
+                {this.props.children}
+    
+                <Footer/> 
+            </Container>
+        )
+    }
+    
 }

@@ -36,9 +36,9 @@ export const KanbanArea = styled('div',{
 })
 
 
-export const CardList = styled("div",{
+export const TaskList = styled("div",{
     display:'grid',
-    gridAutoRows:"6rem",
+    gridAutoRows:"8rem",
     gap:'1rem',
    
     position:'relative'

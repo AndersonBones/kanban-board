@@ -3,27 +3,32 @@ import { HeroAccount, KanbanAccount, LogoutButton } from "./styles";
 import Image from "next/image";
 import userIcon from '../../assets/user.png'
 import { SignOut } from "phosphor-react";
+import React from "react";
 
-export default function KanbanLogoutComponent() {
-    return (
+export class KanbanLogoutComponent extends React.Component {
 
-        <>  
-            <KanbanAccount>
-                
-                <HeroAccount>
-                    <Image src={userIcon} width={40} height={40} alt="User icon" />   
-                    <span>
-                        Anderson Bones
-                    </span>    
+    render(): React.ReactNode {
+        return (
+
+            <>  
+                <KanbanAccount>
                     
-                </HeroAccount>
-
-                <LogoutButton><SignOut size={25}/></LogoutButton>
+                    <HeroAccount>
+                        <Image src={userIcon} width={40} height={40} alt="User icon" />   
+                        <span>
+                            Anderson Bones
+                        </span>    
+                        
+                    </HeroAccount>
+    
+                    <LogoutButton><SignOut size={25}/></LogoutButton>
+                    
+                </KanbanAccount>
                 
-            </KanbanAccount>
             
-        
-        </>
-       
-    )
+            </>
+           
+        )
+    }
+    
 }

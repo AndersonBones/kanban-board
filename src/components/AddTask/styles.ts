@@ -1,6 +1,6 @@
 import { styled } from "@/styles";
 
-export const AddCardButton = styled("button",{
+export const AddTaskButton = styled("button",{
     border:'none',
     display:"flex",
     gap:'.2rem',

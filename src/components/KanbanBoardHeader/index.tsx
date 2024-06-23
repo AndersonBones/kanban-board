@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 
 import {KanbanBoardHeader} from './styles'
 import { KanbanBoardColors } from "@/types/kanban";
+import React from "react";
 
 
 interface KanbanHeaderProps{
@@ -10,14 +11,21 @@ interface KanbanHeaderProps{
 
 }
 
-export default function KanbanBoadHeaderComponent({children}:KanbanHeaderProps){
-    return (
+export class KanbanBoadHeaderComponent extends React.Component<KanbanHeaderProps>{
 
-        <KanbanBoardHeader >
-            {children}
-        </KanbanBoardHeader>
+    constructor({children}:KanbanHeaderProps){
+        super({children})
+    }
+    render(): ReactNode {
+        return (
+
+            <KanbanBoardHeader >
+                {this.props.children}
+            </KanbanBoardHeader>
+        
+            
+            
+        )
+    }
     
-        
-        
-    )
 }
