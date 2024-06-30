@@ -1,27 +1,38 @@
 import { AiOutlineLogout } from "react-icons/ai";
-import { HeroAccount, KanbanAccount, LogoutButton } from "./styles";
-import Image from "next/image";
-import userIcon from '../../assets/user.png'
+import { AvatarImg, HeroAccount, KanbanAccount, LogoutButton } from "./styles";
+import { signOut } from "next-auth/react";
 import { SignOut } from "phosphor-react";
 import React from "react";
 
-export class KanbanLogoutComponent extends React.Component {
 
+interface KanbanLogoutProps{
+    username:string 
+    image:string
+}
+export class KanbanLogoutComponent extends React.Component<KanbanLogoutProps> {
+
+    constructor(props:KanbanLogoutProps){
+        super(props)
+    }
+
+    
     render(): React.ReactNode {
+       
         return (
 
             <>  
                 <KanbanAccount>
                     
                     <HeroAccount>
-                        <Image src={userIcon} width={40} height={40} alt="User icon" />   
+                        <AvatarImg fetchPriority="high" src={this.props.image} quality={100} width={40} height={40} alt="User icon" />   
+                        
                         <span>
-                            Anderson Bones
+                            {this.props.username}
                         </span>    
                         
                     </HeroAccount>
     
-                    <LogoutButton><SignOut size={25}/></LogoutButton>
+                    <LogoutButton onClick={()=>signOut()}><SignOut size={25}/></LogoutButton>
                     
                 </KanbanAccount>
                 

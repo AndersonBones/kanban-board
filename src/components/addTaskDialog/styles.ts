@@ -1,6 +1,11 @@
 import { styled } from "@/styles";
 
+
+export const TaskDialogContainer = styled("div",{
+    padding:"0 .8rem"
+})
 export const TaskForm = styled("form",{
+    
     display:"none",
     flexDirection:"column",
     gap:'1rem',

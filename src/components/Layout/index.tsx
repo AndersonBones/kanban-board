@@ -9,8 +9,8 @@ interface LayoutProps {
 
 export class RootLayout extends React.Component<LayoutProps>{
 
-    constructor({children}:LayoutProps){
-        super({children})
+    constructor(props:LayoutProps){
+        super(props)
     }
 
     render(): ReactNode {
@@ -19,7 +19,7 @@ export class RootLayout extends React.Component<LayoutProps>{
                 
                 {this.props.children}
     
-                <Footer/> 
+                {/* <Footer/>  */}
             </Container>
         )
     }

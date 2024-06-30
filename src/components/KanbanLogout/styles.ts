@@ -1,4 +1,5 @@
 import { styled } from "@/styles";
+import Image from "next/image";
 
 export const KanbanAccount = styled("div",{
     display:'flex',
@@ -8,6 +9,7 @@ export const KanbanAccount = styled("div",{
     justifyItems:'center',
     gap:'1rem',
     padding:'0 .5rem',
+    border:"1px solid white"
 
 })
 
@@ -24,4 +26,9 @@ export const HeroAccount = styled('div',{
     display:'flex',
     alignItems:'center',
     gap:'.4rem'
+})
+
+
+export const AvatarImg = styled(Image, {
+    borderRadius:"50%",
 })

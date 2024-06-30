@@ -5,6 +5,7 @@ export const FooterComponent = styled('footer',{
     alignItems:"center",
     justifyContent:"center",
     backgroundColor:"$linkedinBlue",
+
    
     a:{
         color:'$white'

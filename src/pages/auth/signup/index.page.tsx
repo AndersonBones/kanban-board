@@ -12,6 +12,10 @@ import { checkEmail } from "@/utils/checkIfEmailIsValid";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SignupForm from "@/components/authForms/signup";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { getServerSession } from "next-auth";
+import { buildNextAuthOptions } from "@/pages/api/auth/[...nextauth].api";
+import { useRouter } from "next/navigation";
 
 
 
@@ -20,6 +24,7 @@ import SignupForm from "@/components/authForms/signup";
 export default function Signup(){
     
 
+    const route = useRouter()
     
     
     return (
@@ -54,4 +59,38 @@ export default function Signup(){
 
         </AuthPageContainer>
     )
+}
+
+
+export const getServerSideProps:GetServerSideProps = async (context:GetServerSidePropsContext)=>{
+
+    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res))
+
+
+    if(session){
+        const user = {
+            username:session.user?.name,
+            email:session.user?.email,
+            image: session.user?.image ? session.user.image: null
+        }
+
+        return {
+            redirect:{
+                destination:"/home",
+                permanent:false,
+            },
+
+            props:{
+                user,
+            }
+        }
+    }
+
+    
+
+    return {
+        props:{
+            session:null,
+        },
+    }
 }

@@ -17,18 +17,19 @@ export class AddTask extends React.Component<AddTaskInterface>{
     context!: React.ContextType<typeof KanbanContext>
 
 
-    constructor({children, kanbanBoard}:AddTaskInterface){
-        super({children, kanbanBoard})
+    constructor(props:AddTaskInterface){
+        super(props);
+    
+        
     };
 
     handleOpenTaskName = ():void =>{
-        
-        const {handleToggle} = this.context
-        handleToggle("active",this.props.kanbanBoard)
 
     
+        const {handleAddToggle} = this.context
+        handleAddToggle("active",this.props.kanbanBoard)
 
-        // handleAddTask(kanbanBoard, "task1")
+    
     }
     
     

@@ -13,8 +13,8 @@ interface KanbanHeaderProps{
 
 export class KanbanBoadHeaderComponent extends React.Component<KanbanHeaderProps>{
 
-    constructor({children}:KanbanHeaderProps){
-        super({children})
+    constructor(props:KanbanHeaderProps){
+        super(props)
     }
     render(): ReactNode {
         return (

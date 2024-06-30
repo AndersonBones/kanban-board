@@ -1,23 +1,52 @@
+
 import {Task} from "@/components/task";
-import { TaskList, KanbanArea, KanbanContainer, KanbanHeader, KanbanHeaderTitle } from "./styles";
+import {KanbanArea, KanbanContainer, KanbanHeader, KanbanHeaderTitle } from "./styles";
 import { FaPlus  } from "react-icons/fa";
 import { AddTask } from "@/components/AddTask";
 
 import { KanbanBoardComponent } from "@/components/KanbanBoard";
 import {KanbanBoadHeaderComponent} from "@/components/KanbanBoardHeader";
 import {KanbanLogoutComponent} from "@/components/KanbanLogout";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { KanbanContext } from "@/contexts/kanban";
-import TaskDialog  from "@/components/taskDialog";
-import { UUID } from "crypto";
+import TaskDialog  from "@/components/addTaskDialog";
+import { v4 as uuidv4 } from 'uuid';
+import { useSession } from "next-auth/react";
 
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import auth, { buildNextAuthOptions } from "../api/auth/[...nextauth].api";
+
+import userIcon from '../../assets/user.png'
+import TaskList from "@/components/taskList";
+
+
+interface user{
+    email:string
+    image:string
+    username:string
+}
+
+interface SessionProps{
+    expires:string
+    user:user
+    status: "authenticated" | "unauthenticated"
+}
 
 
 
 export default function Home(){
 
     const {kanbanData} = useContext(KanbanContext)
+    const session = useSession()
 
+   
+    const user = {
+        username:session.data?.user?.name ? session.data?.user?.name : "undefined",
+        image:session.data?.user?.image ? session.data?.user?.image : userIcon.src,
+        email:session.data?.user?.email ? session.data?.user?.email : null
+    }
+    
 
     return(
         <KanbanContainer >
@@ -30,7 +59,7 @@ export default function Home(){
                     
                 </KanbanHeaderTitle>
 
-                <KanbanLogoutComponent/>
+                <KanbanLogoutComponent username={user.username} image={user.image}/>
                 
 
 
@@ -50,9 +79,12 @@ export default function Home(){
                     <TaskList>
                         {
                             kanbanData.Backlog.tasks.map((task)=>{
-                                if(task.taskName){
+                                if(task.taskTitle){
+                                    const title = task.taskTitle
                                     return (
-                                        <Task key={task.TaskId} board="Backlog" taskId={task.TaskId} title={task.taskName}></Task>
+                                        
+                                        <Task key={task.taskId} board="Backlog" taskId={task.taskId} title={title}/>
+                                        
                                     )
                                 }
                                 
@@ -63,6 +95,7 @@ export default function Home(){
                     </TaskList>
 
                     <TaskDialog board="Backlog" ></TaskDialog>
+
                     
                 </KanbanBoardComponent>
 
@@ -79,9 +112,13 @@ export default function Home(){
 
                         {
                             kanbanData.inDev.tasks.map((task)=>{
-                                if(task.taskName){
+                                if(task.taskTitle){
                                     return (
-                                        <Task key={task.TaskId} board="inDev" taskId={task.TaskId} title={task.taskName}></Task>
+                                        
+                                        <Task key={task.taskId} board="inDev" taskId={task.taskId} title={task.taskTitle}></Task>
+                                            
+                                        
+                                        
                                     )
                                 }
                                 
@@ -106,9 +143,12 @@ export default function Home(){
                     <TaskList>
                         {
                             kanbanData.inQA.tasks.map((task)=>{
-                                if(task.taskName){
+                                if(task.taskTitle){
                                     return(
-                                        <Task key={task.TaskId} board="inQA" taskId={task.TaskId} title={task.taskName}></Task>
+                                        
+                                        <Task key={task.taskId} board="inQA" taskId={task.taskId} title={task.taskTitle}></Task>
+                                       
+                                        
                                     )
                                 }   
                                 
@@ -132,11 +172,15 @@ export default function Home(){
 
                     <TaskList>
                         {
+                            
                             kanbanData.Completed.tasks.map((task)=>{
 
-                                if(task.taskName){
+                                if(task.taskTitle){
                                     return (
-                                        <Task key={task.TaskId} title={task.taskName} board={kanbanData.Completed.id} taskId={task.TaskId}></Task>
+                                    
+                                        <Task key={task.taskId} title={task.taskTitle} board={kanbanData.Completed.id} taskId={task.taskId}></Task>
+
+                                       
                                     )
                                 }
                                 
@@ -151,7 +195,34 @@ export default function Home(){
                 </KanbanBoardComponent>
 
             </KanbanArea>
+
+
+         
             
         </KanbanContainer>
     )
+}
+
+
+
+export const getServerSideProps:GetServerSideProps = async (context:GetServerSidePropsContext)=>{
+
+    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res))
+
+    
+    if(!session){
+        return {
+            redirect:{
+                destination:"/auth/login",
+                permanent:false,
+            },
+        }
+    }
+
+
+    return {
+        props:{
+            session
+        },
+    }
 }

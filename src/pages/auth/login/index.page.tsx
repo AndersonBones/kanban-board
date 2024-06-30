@@ -6,7 +6,10 @@ import Image from 'next/image'
 
 import {Logo} from "@/components/logo";
 import LoginForm from "@/components/authForms/login";
-
+import {signIn} from 'next-auth/react'
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { getServerSession } from "next-auth";
+import { buildNextAuthOptions } from "@/pages/api/auth/[...nextauth].api";
 
 
 export default function Login() {
@@ -35,7 +38,7 @@ export default function Login() {
 
                     <AuthAlternative></AuthAlternative>
 
-                    <AuthGoogle><Image src={googleIcon} width={30} alt="google" /> Login with Google</AuthGoogle>
+                    <AuthGoogle onClick={()=>signIn("google" ,{callbackUrl:"/home"})}><Image src={googleIcon} width={30} alt="google" /> Login with Google</AuthGoogle>
                 </Auth>
             </AuthContainer>
 
@@ -49,3 +52,35 @@ export default function Login() {
 }
 
 
+export const getServerSideProps:GetServerSideProps = async (context:GetServerSidePropsContext)=>{
+
+    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res))
+
+
+    if(session){
+        const user = {
+            username:session.user?.name,
+            email:session.user?.email,
+            image: session.user?.image ? session.user.image: null
+        }
+
+        return {
+            redirect:{
+                destination:"/home",
+                permanent:false,
+            },
+
+            props:{
+                user,
+            }
+        }
+    }
+
+    
+
+    return {
+        props:{
+            session:null,
+        },
+    }
+}

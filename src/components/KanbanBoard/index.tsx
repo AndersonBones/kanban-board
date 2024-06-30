@@ -11,8 +11,8 @@ interface KanbanBoardProps{
 
 export class KanbanBoardComponent extends React.Component<KanbanBoardProps>{
 
-    constructor({color, children}:KanbanBoardProps){
-        super({color, children})
+    constructor(props:KanbanBoardProps){
+        super(props)
     }
     render(): ReactNode {
         return(

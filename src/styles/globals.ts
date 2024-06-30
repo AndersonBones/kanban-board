@@ -6,7 +6,7 @@ export const globalStyles = globalCss({
     padding: 0,
     boxSizing: "border-box",
    
-  
+
 
   },
 
@@ -43,6 +43,8 @@ export const globalStyles = globalCss({
     color:"$linkedinBlue",
 
   },
+
+  
 
 
 

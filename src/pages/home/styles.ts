@@ -1,11 +1,17 @@
 import { styled } from "@/styles";
 
+
+
 export const KanbanContainer = styled('div',{
 
     gap:'2rem',
     display:'grid',
     
-    gridTemplateRows:"8rem 60rem",
+    gridTemplateRows:"8rem 62rem",
+
+    '@md':{
+        
+    }
     
 })
 
@@ -35,13 +41,4 @@ export const KanbanArea = styled('div',{
     gap:'2rem',
 })
 
-
-export const TaskList = styled("div",{
-    display:'grid',
-    gridAutoRows:"8rem",
-    gap:'1rem',
-   
-    position:'relative'
-
-})
 

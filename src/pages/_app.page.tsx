@@ -8,22 +8,25 @@ import { Theme } from '@radix-ui/themes';
 
 globalStyles()
 
-
+import { SessionProvider } from "next-auth/react";
 
 const roboto = Roboto({ subsets: ["latin"], weight: "400" })
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps:{session, ...pageProps} }: AppProps) {
   return (
 
-    <KanbanContextProvider>
-      <RootLayout>
-        <Theme>
-          <title>Kanban Board</title>
-          <Component className={roboto.className} {...pageProps} />
-        </Theme>
-        
+    <SessionProvider session={session}>
+        <KanbanContextProvider>
+        <RootLayout>
+          <Theme>
+            <title>Kanban Board</title>
+            <Component className={roboto.className} {...pageProps} />
+          </Theme>
+          
 
-      </RootLayout>
-    </KanbanContextProvider>
+        </RootLayout>
+      </KanbanContextProvider>
+    </SessionProvider>
+    
 
 
   )

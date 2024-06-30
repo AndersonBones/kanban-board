@@ -15,8 +15,13 @@ FUNCIONALIDADES:
  - remover card
 
 AUTENTICAÇÃO:
- - Register/login GOOGLE
- - Register/OAUTH
+  - Login GOOGLE:
+    - Criar o usuario apenas no primeiro acesso (login segundo acesso ou mais) 
+    
+  - Login CREDENTIALS:  
+    - Register e Login Credentials Provider
 
 DATABASE:
  - MYSQL
+
+

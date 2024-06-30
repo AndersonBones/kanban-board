@@ -84,6 +84,12 @@ export const RememberContainer = styled('div',{
 export const AuthFormActions = styled('div',{
     display:'flex',
     flexDirection:"column",
-    gap:'2rem'
+    gap:'2rem',
+
+    '.goLogin, .goSignup':{
+        color:"$linkedinBlue",
+        background:"transparent",
+    }
+    
 })
 

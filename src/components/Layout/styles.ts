@@ -4,6 +4,6 @@ export const Container = styled('section',{
  
     display:'grid',
     
-    gridTemplateRows:"97vh 3vh",
+    gridTemplateRows:"75rem 3rem",
     
 })

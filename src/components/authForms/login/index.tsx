@@ -5,6 +5,7 @@ import { useRef, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Eye, EyeSlash } from "phosphor-react"
+import { useRouter } from "next/router"
 
 const loginCredentialsSchema = z.object({
     email:z.string()
@@ -21,6 +22,7 @@ type LoginCredentials = z.infer<typeof loginCredentialsSchema>
 
 export default function LoginForm() {
     
+    const route = useRouter()
     const [toggleMask, setToggleMask] = useState("password")
 
     const {register, reset, handleSubmit, formState:{errors, isSubmitting}} = useForm<LoginCredentials>({
@@ -81,7 +83,7 @@ export default function LoginForm() {
                 </AuthFormActionsPassword>
 
                 
-                <span>Dont have on accout <a href="#">Signup</a></span>
+                <span>Dont have on accout <button onClick={()=>route.push("/auth/signup")} className="goSignup" type="button">Signup</button></span>
             </AuthFormActions>
 
       
