@@ -1,4 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+
+import PrismaAdapter from "@/lib/prisma-adapter";
+
+import { prisma } from "@/utils/prisma";
 import type { NextApiRequest, NextApiResponse, NextPageContext } from "next";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
@@ -8,7 +12,9 @@ import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 
 export function buildNextAuthOptions(req:NextApiRequest | NextPageContext['req'], res:NextApiResponse |  NextPageContext['res']):NextAuthOptions{
   return {
-  
+    adapter:PrismaAdapter(req, res),
+
+
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -23,42 +29,62 @@ export function buildNextAuthOptions(req:NextApiRequest | NextPageContext['req']
           }
         },
 
-        // profile(profile:GoogleProfile){
-        //   return {
-        //     id:profile.sub,
-        //     avatar_url:profile.picture,
-        //     email:profile.email,
-        //     username:profile.name,
-        //     name:profile.name
+        profile(profile:GoogleProfile){
+          return {
+            id:profile.sub,
+            image:profile.picture,
+            email:profile.email,
+            name:profile.name,
+            
   
-        //   }
-        // }        
+          }
+        }        
       }),
     ],
+
+    secret:process.env.NEXTAUTH_SECRET,
 
     pages:{
       error:"/auth/error"
     },
 
     callbacks:{
-      async signIn({user, account, profile, email, credentials}){
-        if (!account?.scope?.includes("https://www.googleapis.com/auth/userinfo.profile")) { // not permission
-          return '/register/connect-calendar?error=permissions'
-        }
 
-        return true // permission
-      },
-      async session({session}){
-        
 
-        const user = {
-          username:session.user?.name ? session.user.name : null,
-          image:session.user?.image ? session.user.image : null,
-          email:session.user?.email ? session.user.email : null
+
+      async jwt({account, token, user}) {
+
+        if (user && account) {
+          token.access_token = account.access_token;
         }
+        return token
         
-        return session
       },
+
+      async session({session, user, token}){
+        
+        
+        
+        return {...session, user}
+        
+      },
+
+      async signIn({user, account, profile, credentials}){
+        const {email, image, name} = user
+
+    
+        if(!account){
+
+          return '/auth/login?error=permissions'
+        }
+        return true
+
+        
+      },
+
+      
+      
+      
     }
     
   }

@@ -16,6 +16,8 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { buildNextAuthOptions } from "@/pages/api/auth/[...nextauth].api";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { SessionProps } from "@/types/kanban";
 
 
 
@@ -49,7 +51,7 @@ export default function Signup(){
                     <SignupForm/>
                     <AuthAlternative></AuthAlternative>
 
-                    <AuthGoogle><Image src={googleIcon} width={30} alt="google" /> Login with Google</AuthGoogle>
+                    <AuthGoogle onClick={()=>signIn("google")}><Image src={googleIcon} width={30} alt="google" /> Login with Google</AuthGoogle>
                 </Auth>
             </AuthContainer>
 
@@ -64,24 +66,21 @@ export default function Signup(){
 
 export const getServerSideProps:GetServerSideProps = async (context:GetServerSidePropsContext)=>{
 
-    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res))
+    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res)) as SessionProps
 
 
     if(session){
-        const user = {
-            username:session.user?.name,
-            email:session.user?.email,
-            image: session.user?.image ? session.user.image: null
-        }
-
+       
+        
         return {
             redirect:{
-                destination:"/home",
+                destination:`/home/${session.user.id}`,
                 permanent:false,
             },
 
             props:{
-                user,
+
+              session
             }
         }
     }

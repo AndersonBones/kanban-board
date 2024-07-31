@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 
 import {KanbanBoardHeader} from './styles'
-import { KanbanBoardColors } from "@/types/kanban";
+
 import React from "react";
 
 

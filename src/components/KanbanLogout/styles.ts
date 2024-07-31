@@ -8,8 +8,9 @@ export const KanbanAccount = styled("div",{
     borderRadius:'.3rem',
     justifyItems:'center',
     gap:'1rem',
-    padding:'0 .5rem',
-    border:"1px solid white"
+    padding:"0 1rem",
+
+    backgroundColor:"$gray600"
 
 })
 
@@ -17,15 +18,20 @@ export const LogoutButton = styled("button",{
     border:"none",
     cursor:"pointer",
     backgroundColor:'transparent',
-    padding:".2rem 1rem",
-    color:'$white',
-
+   
+    color:'$darkGray',
+    
 })
 
 export const HeroAccount = styled('div',{
     display:'flex',
     alignItems:'center',
-    gap:'.4rem'
+    gap:'.4rem',
+
+    span:{
+        color:'$darkGray',
+        fontWeight:"bold"
+    }
 })
 
 

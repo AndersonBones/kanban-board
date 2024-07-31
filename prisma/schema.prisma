@@ -14,95 +14,76 @@ datasource db {
 }
 
 model User {
-  name         String
-  email        String  @unique
-  password     String  @unique
-  refreshToken String?
-  board        Board   @relation(fields: [boardId], references: [id])
-  boardId      String
-}
+  id            String  @id @default(uuid())
+  name          String
+  email         String  @unique
+  avatar_url    String
+  password      String? @unique
+  refresh_token String?
+  boards        Board[]
 
-model BacklogTasks {
-  taskId    String @id @default(uuid())
-  taskTitle String @db.Text
+  Account Account[]
+  Session Session[]
 
-  Backlog   Backlog? @relation(fields: [backlogId], references: [id])
-  backlogId String?
-
-  @@map("backlogTasks")
-}
-
-model Backlog {
-  id      String         @id @default(uuid())
-  tasks   BacklogTasks[]
-  Board   Board?         @relation(fields: [boardId], references: [id])
-  boardId String?
-
-  @@map("backlog")
-}
-
-model InDevTasks {
-  taskId    String @id @default(uuid())
-  taskTitle String @db.Text
-
-  InDev   InDev?  @relation(fields: [inDevId], references: [id])
-  inDevId String?
-
-  @@map("inDevTasks")
-}
-
-model InDev {
-  id               String       @id @default(uuid())
-  tasks            InDevTasks[]
-  inDevTasksTaskId String
-  Board            Board?       @relation(fields: [boardId], references: [id])
-  boardId          String?
-
-  @@map("inDev")
-}
-
-model InQaTasks {
-  taskId    String @id @default(uuid())
-  taskTitle String @db.Text
-
-  InQA   InQa?   @relation(fields: [inQAId], references: [id])
-  inQAId String?
-
-  @@map("inQaTasks")
-}
-
-model InQa {
-  id      String      @id @default(uuid())
-  tasks   InQaTasks[]
-  Board   Board?      @relation(fields: [boardId], references: [id])
-  boardId String?
-
-  @@map("inQA")
-}
-
-model CompletedTasks {
-  taskId      String     @id @default(uuid())
-  taskTitle   String     @db.Text
-  Completed   Completed? @relation(fields: [completedId], references: [id])
-  completedId String?
-
-  @@map("completedTasks")
-}
-
-model Completed {
-  id      String           @id @default(uuid())
-  tasks   CompletedTasks[]
-  Board   Board?           @relation(fields: [boardId], references: [id])
-  boardId String?
-
-  @@map("completed")
+  @@map("users")
 }
 
 model Board {
-  id        String      @id @default(uuid())
-  backlog   Backlog[]
-  indev     InDev[]
-  inqa      InQa[]
-  completed Completed[]
-  User      User[]
+  id String @id @default(uuid())
+
+  board_title String
+  color       String
+  tasks       Tasks[]
+  User        User?   @relation(fields: [user_id], references: [id])
+  user_id     String?
+
+  @@map("boards")
+}
+
+model Tasks {
+  id       String  @id @default(uuid())
+  title    String
+  Board    Board?  @relation(fields: [board_id], references: [id])
+  board_id String?
+
+  @@map("tasks")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  provider_accountId String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_accountId])
+  @@map("accounts")
+}
+
+model Session {
+  id            String   @id @default(cuid())
+  session_token String   @unique @map("session_token")
+  userId        String   @map("user_id")
+  expires       DateTime
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
 }

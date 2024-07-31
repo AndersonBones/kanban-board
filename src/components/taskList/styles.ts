@@ -44,7 +44,7 @@ export const ScrollAreaScrollbar = styled(ScrollArea.Scrollbar, {
 
 export const ScrollAreaThumb = styled(ScrollArea.Thumb, {
     flex: 1,
-    background: mauve.mauve10,
+    background: "$gray",
     borderRadius: SCROLLBAR_SIZE,
     
     
@@ -67,9 +67,12 @@ export const ScrollAreaCorner = styled(ScrollArea.Corner, {
 });
 
 export const Box = styled('div', {
+
     display:"grid",
-    gridAutoRows:"5.5rem",
+    gridAutoRows:"7rem",
     gap:"1rem",
-    padding:"0 .8rem"
+    padding:"0 .8rem",
+
+   
 });
 

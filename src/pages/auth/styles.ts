@@ -2,8 +2,8 @@ import { styled } from "@/styles";
 import { Password } from 'primereact/password';
 
 export const AuthPageContainer = styled('div',{
-    width:'100%',
-    height:'100%',
+    margin:"20rem auto",
+
     display:'flex',
     justifyContent:"center",
     alignItems:"center",

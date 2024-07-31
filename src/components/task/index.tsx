@@ -1,61 +1,80 @@
-import { KanbanBoardColors, KanbanBoardType, TaskInterface } from "@/types/kanban";
+import { TaskInterface } from "@/types/kanban";
 import { KanbanTask, KanbanTaskActions, TaskNameArea } from "./styles";
-import { Trash, NotePencil } from "phosphor-react";
+import { Trash, PencilSimple } from "phosphor-react";
 import { useContext } from "react";
 import { KanbanContext } from "@/contexts/kanban";
 import React from "react";
 import EditTaskDialog from "../editTaskDialog";
+import { clientAxios } from "@/lib/axios";
+import { v4 as uuidv4 } from 'uuid';
+import { useSession } from "next-auth/react";
+import { AxiosError } from "axios";
+
+export default function Task({ board_id, task_id, title, status }: TaskInterface) {
+
+    const { removeTask, kanbanBoards, handleEditTask} = useContext(KanbanContext)
+    const taskSelected = kanbanBoards.filter(boardType=>boardType.id == board_id)[0].tasks.filter(task=>task.id == task_id)[0].status
+   
+    const session = useSession()
+
+    const handleRemoveTask = async ()=>{
+
+        try {
+
+            const response = await clientAxios.delete('task/remove', {
+                data: {
+                    task_id
+                },
+
+            })
+
+            const {task, status} = response.data
+
+           
+            
+            removeTask(task.board_id, task.id)
 
 
-export class Task extends React.Component<TaskInterface> {
 
-    constructor(props: TaskInterface) {
-        super(props)
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                
+                alert(error?.response?.data?.message)
+                return
+            }
+        }
+
     }
 
-    static contextType = KanbanContext
-    context!: React.ContextType<typeof KanbanContext>
+    return (
+
+        <>
+            <KanbanTask className={taskSelected} >
+
+                <TaskNameArea>
+
+                    <p>
+                        {title}
+                    </p>
+                </TaskNameArea>
 
 
+                <KanbanTaskActions>
+                    <button onClick={() => handleEditTask(board_id, "active", task_id)}><PencilSimple size={22} /></button>
+                    <button onClick={handleRemoveTask}><Trash size={22} /></button>
+                </KanbanTaskActions>
+            </KanbanTask>
 
 
-    render(): React.ReactNode {
-        const { removeTask, handleEditTask, editToogle } = this.context
-        const { board, taskId, title } = this.props
+            <EditTaskDialog task={{
+                board_id,
+                task_id,
+                title
 
-        const taskSelected = editToogle[this.props.board].filter(task => {
-            return task.taskId == this.props.taskId
-        })
+            }} />
 
-        return (
+        </>
 
-            <>
-                <KanbanTask className={taskSelected[0] ? taskSelected[0].status : ""} >
-
-                    <TaskNameArea>
-
-                        <p>
-                            {title}
-                        </p>
-                    </TaskNameArea>
-
-
-                    <KanbanTaskActions>
-                        <button onClick={() => handleEditTask(this.props.board, "active", this.props.taskId)}><NotePencil size={20} /></button>
-                        <button onClick={() => removeTask(board, taskId)}><Trash size={20} /></button>
-                    </KanbanTaskActions>
-                </KanbanTask>
-
-                <EditTaskDialog task={{
-                    board: this.props.board,
-                    taskId: this.props.taskId,
-                    title: title
-
-                }} />
-
-            </>
-
-        )
-    }
-
+    )
 }

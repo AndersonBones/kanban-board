@@ -20,7 +20,8 @@ export const { config,
             colors: {
                 white: '#fff',
                 gpt_gray: '#212121',
-
+                gray500:"#F1F2F6",
+                gray600:"#E5E8ED",
                 green: "#50A451",
                 yellow: "#F5C43E",
                 skyBlue: "#56B6CE",

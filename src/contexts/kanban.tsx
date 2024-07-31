@@ -1,5 +1,9 @@
-import { KanbanBoardType, KanbanContextInterface, KanbanContextProps, KanbanData, KanbanToggle, AddToggleInterface, EditToggleInterface, TaskInterface } from "@/types/kanban";
+import { clientAxios, serverAxios } from "@/lib/axios";
+import { BoardClientSchema, BoardSchema, KanbanContextInterface, KanbanContextProps, SessionProps, TaskClientSchema, Toggle, UserSchema } from "@/types/kanban";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
+import { useColor } from "react-color-palette";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -7,181 +11,143 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const KanbanContext = createContext({} as KanbanContextProps)
 
-export const KanbanContextProvider = ({children}:KanbanContextInterface)=>{
+export const KanbanContextProvider = ({ children }: KanbanContextInterface) => {
 
-    const [kanban, setKanban] = useState<KanbanData>({
-        Backlog:{
-            id:"Backlog",
-            tasks:[{
-                taskId:uuidv4(),
-                taskTitle:""
-            }]
-        },
-        inDev:{
-            id:"inDev",
-            tasks:[{
-                taskId:uuidv4(),
-                taskTitle:""
-            }]
-        },
-        inQA:{
-            id:"inQA",
-            tasks:[{
-                taskId:uuidv4(),
-                taskTitle:""
-            }]
-        },
-        Completed:{
-            id:"Completed",
-            tasks:[{
-                taskId:uuidv4(),
-                taskTitle:""
-            }]
-        }
-    })
-
-    const [addToggle, setAddToggle] = useState<AddToggleInterface>({
-        Backlog: "",
-        inDev:"",
-        inQA:"",
-        Completed:""
-
-    })
-
-    const [editToogle, setEditToggle] = useState<EditToggleInterface>({
-        Backlog: [{
-            taskId:"",
-            status:""
-        }],
-        inDev:[{
-            taskId:"",
-            status:""
-        }],
-        inQA:[{
-            taskId:"",
-            status:""
-        }],
-        Completed:[{
-            taskId:"",
-            status:""
-        }]
-    })
+    const [color, setColor] = useColor("#0aa032")
+    const [kanbanBoards, setKanbanBoards] = useState<BoardClientSchema[]>([])
 
 
-    const handleEditTask = (board:KanbanBoardType, status:KanbanToggle, taskId:string) =>{
-        let newToggles = {...editToogle}
 
-        const taskExists = newToggles[board].filter(task=>task.taskId == taskId)
-        
-        if(taskExists){
-            newToggles[board].map(task=>{
-                if(task.taskId == taskId){
-                    task.status = status
+    const handleKanban = async (boards: BoardSchema[]) => {
+
+        setKanbanBoards(data => {
+
+            return boards.map((board, index) => {
+                return {
+                    board_title: boards[index].board_title,
+                    color: boards[index].color,
+                    id: boards[index].id,
+                    status: "",
+                    tasks: board.tasks.map((task, index): TaskClientSchema => {
+                        return {
+                            id: task.id,
+                            status: "",
+                            title: task.title,
+                            board_id: task.board_id
+                        }
+                    })
                 }
-                
             })
-        }else{   
-            newToggles[board].push({
-                status,
-                taskId
-            })
-        }
-        
+        })
 
-
-        setEditToggle(newToggles)
     }
 
 
-    
-    
+    const addBoard = async (board_id: string, title: string, color: string, user_id: string) => {
 
-    
-    const handleAddToggle = (status:KanbanToggle, board?:KanbanBoardType)=>{
 
-        if(board){
-            let newToggles = {...addToggle}
-            newToggles[board] = status
+        setKanbanBoards([...kanbanBoards, {
 
-            setAddToggle(newToggles)
-        }
-        
+            board_title: title,
+            color,
+            id: board_id,
+            status: "",
+            tasks: []
+        }])
     }
 
-    const editTask = (board:KanbanBoardType, taskTitle:string, taskId:string) =>{
-        let newKanban = {...kanban}
+    const handleAddToggle = (status: Toggle, board_id?: String) => {
 
-        
-        newKanban[board].tasks.map(task=>{
-            if(task.taskId == taskId){
-                task.taskTitle = taskTitle
+        if (board_id) {
+            let newToggles = [...kanbanBoards]
+
+
+            newToggles.filter(boardType => boardType.id == board_id)[0].status = status
+
+            setKanbanBoards(newToggles)
+        }
+
+    }
+
+
+    const addTask = async (task_id: string, board_id: string, task_title: string) => {
+
+        let newKanban = [...kanbanBoards]
+
+        newKanban.filter(boardType => boardType.id == board_id)[0].tasks.push({
+            board_id,
+            status: "",
+            id: task_id,
+            title: task_title
+        })
+
+
+        setKanbanBoards(newKanban)
+
+    }
+
+    const handleEditTask = (board_id: String, status: Toggle, taskId: string) => {
+
+        let newToggles = [...kanbanBoards]
+
+
+        newToggles.filter(boardType => boardType.id == board_id)[0].tasks.map(task => {
+            if (task.id == taskId) {
+                task.status = status
             }
-
         })
 
-        setKanban(newKanban)
+
+        setKanbanBoards(newToggles)
     }
 
-    const addTask = (board:KanbanBoardType, taskTitle:string)=>{
-        
-        let newKanban = {...kanban}
-        const taskId = uuidv4()
+    const editTask = async (board_id: String, task_title: string, task_id: string) => {
 
-        newKanban[board].tasks.push({
-            taskId,
-            taskTitle
+
+        let newKanban = [...kanbanBoards]
+
+        newKanban.filter(boardType => boardType.id == board_id)[0].tasks.map(editTask => {
+            if (editTask.id == task_id) {
+                editTask.title = task_title
+            }
         })
 
-        setKanban(newKanban)
+        setKanbanBoards(newKanban)
 
-        let newToggles = {...editToogle}
-
-
-        
-        newToggles[board].push({
-            status:"",
-            taskId
-        })
 
     }
 
 
-    const removeTask = (board:KanbanBoardType, taskId:string)=>{
-        let newKanban = {...kanban}
-        let newEditToggle = {...editToogle}
-        
-        newKanban[board].tasks = newKanban[board].tasks.filter((task)=>task.taskId != taskId)
-        setKanban(newKanban)
-
-        newEditToggle[board] = editToogle[board].filter(task=>{
-            return task.taskId !== taskId
-        })
 
 
-        setEditToggle(newEditToggle)
-        
-        
+
+    const removeTask = async (board_id: string, task_id: string) => {
+        let newKanban = [...kanbanBoards]
+
+        const updatedTasks = newKanban.filter(boardType => boardType.id == board_id)[0].tasks.filter(task=> task.id != task_id)
+
+
+
+       newKanban.filter(board=>board.id == board_id)[0].tasks = updatedTasks
+
+        setKanbanBoards(newKanban)
+
     }
 
-
-
-    useEffect(()=>{
-        console.log(kanban)
-        console.log(addToggle)
-        console.log(editToogle)
-    },[addToggle, kanban, editToogle])
 
 
     return (
         <KanbanContext.Provider value={{
+            addBoard,
+            handleKanban,
             handleAddToggle,
             removeTask,
             handleEditTask,
-            kanbanData:kanban,
+            kanbanBoards,
             addTask,
             editTask,
-            addToggle,
-            editToogle
+            color,
+            setColor
         }}>
 
             {children}

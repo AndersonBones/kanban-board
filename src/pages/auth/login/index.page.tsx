@@ -6,13 +6,25 @@ import Image from 'next/image'
 
 import {Logo} from "@/components/logo";
 import LoginForm from "@/components/authForms/login";
-import {signIn} from 'next-auth/react'
+import {signIn, useSession} from 'next-auth/react'
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { buildNextAuthOptions } from "@/pages/api/auth/[...nextauth].api";
 
+import { SessionProps, UserSession } from "@/types/kanban";
 
-export default function Login() {
+
+
+export default function Login({expires, user}:SessionProps) {
+
+
+    const handleSignIn = ()=>{
+        signIn("google")
+      
+    }
+
+    const session = useSession()
+    console.log(session.status)
     
     return (
         <AuthPageContainer>
@@ -38,7 +50,7 @@ export default function Login() {
 
                     <AuthAlternative></AuthAlternative>
 
-                    <AuthGoogle onClick={()=>signIn("google" ,{callbackUrl:"/home"})}><Image src={googleIcon} width={30} alt="google" /> Login with Google</AuthGoogle>
+                    <AuthGoogle onClick={handleSignIn}><Image src={googleIcon} width={30} alt="google" /> Login with Google</AuthGoogle>
                 </Auth>
             </AuthContainer>
 
@@ -54,24 +66,21 @@ export default function Login() {
 
 export const getServerSideProps:GetServerSideProps = async (context:GetServerSidePropsContext)=>{
 
-    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res))
+    const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res)) as SessionProps
 
 
     if(session){
-        const user = {
-            username:session.user?.name,
-            email:session.user?.email,
-            image: session.user?.image ? session.user.image: null
-        }
-
+       
+        
         return {
             redirect:{
-                destination:"/home",
+                destination:`/home/${session.user.id}`,
                 permanent:false,
             },
 
             props:{
-                user,
+
+              session
             }
         }
     }

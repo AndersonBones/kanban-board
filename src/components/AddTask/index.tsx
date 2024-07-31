@@ -1,11 +1,11 @@
 import { ReactNode, useContext } from "react"
 import { AddTaskButton } from "./styles"
-import { KanbanBoardType, KanbanContextProps } from "@/types/kanban"
+import { KanbanContextProps } from "@/types/kanban"
 import { KanbanContext } from "@/contexts/kanban"
 import React from "react"
 
 interface AddTaskInterface{
-    kanbanBoard:KanbanBoardType,
+    board_id:string,
     children:ReactNode
 }
 
@@ -27,7 +27,7 @@ export class AddTask extends React.Component<AddTaskInterface>{
 
     
         const {handleAddToggle} = this.context
-        handleAddToggle("active",this.props.kanbanBoard)
+        handleAddToggle("active",this.props.board_id)
 
     
     }

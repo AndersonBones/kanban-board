@@ -1,12 +1,14 @@
 import { ReactNode } from "react";
 import { KanbanBoard } from "./styles";
-import { KanbanBoardColors } from "@/types/kanban";
+
 import React from "react";
+import { DroppableProvided } from "@hello-pangea/dnd";
 
 
 interface KanbanBoardProps{
     children:ReactNode
-    color: KanbanBoardColors
+    color: string
+    inner: DroppableProvided
 }
 
 export class KanbanBoardComponent extends React.Component<KanbanBoardProps>{
@@ -16,7 +18,7 @@ export class KanbanBoardComponent extends React.Component<KanbanBoardProps>{
     }
     render(): ReactNode {
         return(
-            <KanbanBoard css={{backgroundColor:this.props.color}} >
+            <KanbanBoard ref={this.props.inner.innerRef} css={{backgroundColor:this.props.color}} >
                 {this.props.children}
                 
             </KanbanBoard>
