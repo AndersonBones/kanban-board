@@ -47,7 +47,7 @@ export const AuthHero = styled("div",{
 
     padding:'0 1rem',
 
-    backgroundImage:"linear-gradient( 135deg, #ABDCFF 10%, #0396FF   100%);"
+    backgroundImage:"linear-gradient( 135deg, $emerald_green 10%, $emerald_dark_green   100%);"
 })
 
 

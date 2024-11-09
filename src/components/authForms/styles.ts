@@ -53,7 +53,7 @@ export const ToggleMask = styled("button",{
 
 export const SubmitLogin = styled("button",{
     padding:'.8rem 0',
-    backgroundColor:"$linkedinBlue",
+    backgroundColor:"$emerald_green",
     color:'$white'
 })
 
@@ -87,7 +87,7 @@ export const AuthFormActions = styled('div',{
     gap:'2rem',
 
     '.goLogin, .goSignup':{
-        color:"$linkedinBlue",
+        color:"$emerald_green",
         background:"transparent",
     }
     

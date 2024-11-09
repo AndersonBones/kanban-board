@@ -13,25 +13,40 @@ export const KanbanContainer = styled('div',{
     
 })
 
+
+export const AddButton = styled("button",{
+    display:"flex",
+    alignItems:"center",
+    padding:"1rem",
+    gap:'.3rem',
+    background:"$emerald_green",
+
+    color:"$white",
+    fontWeight:"bold"
+})
+
+
 export const KanbanMenu = styled('div', {
     
     width:"20rem",
     height:'100vh',
     display:'flex',
-    justifyContent:"center",
+    flexDirection:"column",
+    justifyContent:"space-between",
     padding:'2rem 1.5rem',
 
-    backgroundColor:"$gray500",
+    backgroundColor:"$emerald_green",
     color:"$white"
 })
 
-export const KanbanHeader = styled("div",{
+export const KanbanHeader = styled("header",{
     display:'flex',
     justifyContent:"space-between",
     padding:"1rem 0",
     marginBottom:"5rem",
 
 })
+
 export const KanbanTitle = styled("div",{
     color:"$darkGray",
 

@@ -17,7 +17,7 @@ model User {
   id            String  @id @default(uuid())
   name          String
   email         String  @unique
-  avatar_url    String
+  avatar_url    String?
   password      String? @unique
   refresh_token String?
   boards        Board[]

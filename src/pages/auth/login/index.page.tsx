@@ -4,8 +4,8 @@ import { Auth, AuthAlternative, AuthContainer, AuthGoogle, AuthHero, AuthPageCon
 import googleIcon from '../../../assets/google.png'
 import Image from 'next/image'
 
-import {Logo} from "@/components/logo";
-import LoginForm from "@/components/authForms/login";
+import {Logo} from "@/components/kanban/Logo";
+import LoginForm from "@/components/AuthForms/login";
 import {signIn, useSession} from 'next-auth/react'
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
@@ -23,15 +23,16 @@ export default function Login({expires, user}:SessionProps) {
       
     }
 
-    const session = useSession()
-    console.log(session.status)
+  
+    // const session = useSession()
+    // console.log(session)
     
     return (
         <AuthPageContainer>
 
             <AuthContainer>
                 <AuthHero>
-                    <Logo/>
+                    <Logo size={3}/>
                     
                     <h2>Welcome back!</h2>
                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -66,9 +67,11 @@ export default function Login({expires, user}:SessionProps) {
 
 export const getServerSideProps:GetServerSideProps = async (context:GetServerSidePropsContext)=>{
 
+    
+
     const session = await getServerSession(context.req, context.res, buildNextAuthOptions(context.req, context.res)) as SessionProps
 
-
+   
     if(session){
        
         

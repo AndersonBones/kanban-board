@@ -23,11 +23,11 @@ export const { config,
                 gray500:"#F1F2F6",
                 gray600:"#E5E8ED",
                 green: "#50A451",
-                yellow: "#F5C43E",
-                skyBlue: "#56B6CE",
                 gray: "#EFEFEF",
-                linkedinBlue: "#0396FF",
-                darkGray: "#4A525A"
+                darkGray: "#4A525A",
+                emerald_green:"#116B61",
+                emerald_dark_green:"#144341",
+                red:"#DE3939"
             },
 
             fontSizes: {

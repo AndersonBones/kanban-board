@@ -1,6 +1,6 @@
 
 import { Dispatch, ReactNode, SetStateAction } from "react"
-import { IColor } from "react-color-palette"
+
 
 
 
@@ -19,6 +19,7 @@ export interface SessionProps {
 }
 
 export type Toggle = "active" | ""
+export type BoardDialogAction = "add" | "update" | "delete"
 
 export interface TaskInterface{
     board_id:string
@@ -69,13 +70,14 @@ export interface KanbanContextProps{
     handleKanban:(boards:BoardSchema[])=>void
     addBoard:(board_id:string, title:string, color:string, user_id:string)=>void
     kanbanBoards:BoardClientSchema[]
+    updateBoard:(board_id:string, board_title:string, color:string)=>void
+    deleteBoard:(board_id:string)=>void
     addTask:(task_id:string, board_id:string, taskTitle:string)=>void
     editTask:(board_id:string, taskTitle:string, taskId:string)=>void
     removeTask: (board_id:string, taskId:string)=>void
     handleEditTask:(board_id:string, status:Toggle, taskId:string)=>void
     handleAddToggle: (status:Toggle, board_id?:string)=>void
-    color:IColor
-    setColor:Dispatch<SetStateAction<IColor>>
+
 }
 
 export interface KanbanContextInterface{

@@ -29,6 +29,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
         }
     })
 
+
+
     if(user == null){
         throw new Error("Unauthenticated")
     }

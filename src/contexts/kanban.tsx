@@ -1,11 +1,8 @@
-import { clientAxios, serverAxios } from "@/lib/axios";
-import { BoardClientSchema, BoardSchema, KanbanContextInterface, KanbanContextProps, SessionProps, TaskClientSchema, Toggle, UserSchema } from "@/types/kanban";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { createContext, useEffect, useState } from "react";
-import { useColor } from "react-color-palette";
 
-import { v4 as uuidv4 } from 'uuid';
+import { BoardClientSchema, BoardSchema, KanbanContextInterface, KanbanContextProps, TaskClientSchema, Toggle } from "@/types/kanban";
+import { createContext, useState } from "react";
+
+
 
 
 
@@ -13,7 +10,7 @@ export const KanbanContext = createContext({} as KanbanContextProps)
 
 export const KanbanContextProvider = ({ children }: KanbanContextInterface) => {
 
-    const [color, setColor] = useColor("#0aa032")
+ 
     const [kanbanBoards, setKanbanBoards] = useState<BoardClientSchema[]>([])
 
 
@@ -66,6 +63,26 @@ export const KanbanContextProvider = ({ children }: KanbanContextInterface) => {
 
             setKanbanBoards(newToggles)
         }
+
+    }
+
+    const updateBoard = (board_id:string, board_title:string, color:string)=>{
+        let newToggles = [...kanbanBoards]
+
+
+        newToggles.filter(boardType => boardType.id == board_id)[0].color = color
+
+        newToggles.filter(boardType => boardType.id == board_id)[0].board_title = board_title
+
+
+        setKanbanBoards(newToggles)
+    }
+
+    const deleteBoard = (board_id:string)=>{
+        let newToggles = kanbanBoards.filter(board => board.id != board_id)
+
+        setKanbanBoards(newToggles)
+
 
     }
 
@@ -141,13 +158,13 @@ export const KanbanContextProvider = ({ children }: KanbanContextInterface) => {
             addBoard,
             handleKanban,
             handleAddToggle,
+            updateBoard,
+            deleteBoard,
             removeTask,
             handleEditTask,
             kanbanBoards,
             addTask,
             editTask,
-            color,
-            setColor
         }}>
 
             {children}

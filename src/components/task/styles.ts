@@ -45,7 +45,7 @@ export const KanbanTaskActions = styled('div',{
         alignItems:"center",
         border:"none",
         backgroundColor:"$white",
-        color:"black"
+        color:"$darkGray"
     }
 })
 

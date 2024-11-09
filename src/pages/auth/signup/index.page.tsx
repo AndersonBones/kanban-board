@@ -6,12 +6,12 @@ import googleIcon from '../../../assets/google.png'
 import Image from 'next/image'
 
 import { Eye, EyeSlash } from "phosphor-react";
-import {Logo} from "@/components/logo";
+import {Logo} from "@/components/kanban/Logo";
 import { z } from "zod";
 import { checkEmail } from "@/utils/checkIfEmailIsValid";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SignupForm from "@/components/authForms/signup";
+import SignupForm from "@/components/AuthForms/signup";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { buildNextAuthOptions } from "@/pages/api/auth/[...nextauth].api";
@@ -34,7 +34,7 @@ export default function Signup(){
 
             <AuthContainer>
                 <AuthHero>
-                    <Logo/>
+                    <Logo size={3}/>
                     <h1>Join us today!</h1>
                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,

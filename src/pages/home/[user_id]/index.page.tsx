@@ -1,32 +1,37 @@
 
 
-import { DragTask, Kanban, KanbanArea, KanbanContainer, KanbanHeader, KanbanMenu, KanbanTitle } from "./styles";
+import { AddButton, DragTask, Kanban, KanbanArea, KanbanContainer, KanbanHeader, KanbanMenu, KanbanTitle } from "./styles";
 import { FaPlus } from "react-icons/fa";
-import { AddTask } from "@/components/AddTask";
 
-import { KanbanBoardComponent } from "@/components/KanbanBoard";
-import { KanbanBoadHeaderComponent } from "@/components/KanbanBoardHeader";
-import { KanbanLogoutComponent } from "@/components/KanbanLogout";
+
+
+
+import { KanbanLogoutComponent } from "@/components/kanban/KanbanLogout";
 import { useContext, useEffect } from "react";
 import { KanbanContext } from "@/contexts/kanban";
-import TaskDialog from "@/components/addTaskDialog";
+import TaskDialog from "@/components/task/AddTaskDialog";
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 
-
+import { v4 as uuidv4 } from 'uuid';
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { buildNextAuthOptions } from "../../api/auth/[...nextauth].api";
 
+import TaskList from "@/components/task/TaskList";
 
-import TaskList from "@/components/taskList";
-
-import InputBoardDialog from "@/components/inputBoardDialog";
-
-
-import "react-color-palette/css";
-import { serverAxios } from "@/lib/axios";
+import {  serverAxios } from "@/lib/axios";
 import { UserSchema, SessionProps } from "@/types/kanban";
 import Task from "@/components/task";
+
+
+import BoardDialog from "@/components/board/BoardDialog";
+
+import KanbanMenuNav from "@/components/kanban/KanbanMenuNav/index.page";
+import { BoardContainer } from "@/components/board/BoardContainer";
+import { BoadHeader } from "@/components/board/BoardHeader";
+
+
+
 
 
 
@@ -34,7 +39,7 @@ import Task from "@/components/task";
 
 export default function Home({ avatar_url, boards, name }: UserSchema) {
 
-    const { handleKanban, kanbanBoards } = useContext(KanbanContext)
+    const { handleKanban, kanbanBoards} = useContext(KanbanContext)
 
     useEffect(()=>{
         handleKanban(boards)
@@ -47,13 +52,12 @@ export default function Home({ avatar_url, boards, name }: UserSchema) {
 
     }
 
-
-
     return (
         <KanbanContainer >
 
             <KanbanMenu>
-
+                
+                <KanbanMenuNav/>
                 <KanbanLogoutComponent username={name} image={avatar_url} />
 
             </KanbanMenu>
@@ -68,7 +72,9 @@ export default function Home({ avatar_url, boards, name }: UserSchema) {
                     </KanbanTitle>
 
 
-                    <InputBoardDialog />
+                    <BoardDialog dialog={true} action={"add"} >
+                        <AddButton><FaPlus size={18} /> Add board</AddButton>
+                    </BoardDialog>
 
                 </KanbanHeader>
 
@@ -81,18 +87,21 @@ export default function Home({ avatar_url, boards, name }: UserSchema) {
                         {kanbanBoards.map((board) => {
                             return (
 
-                                <Droppable key={board.id} droppableId={board.id}>
+                                <Droppable key={uuidv4()} droppableId={board.id}>
                                     {(provided) => (
-                                        <KanbanBoardComponent {...provided.droppableProps} inner={provided} color={board.color} key={board.id}  >
-                                            <KanbanBoadHeaderComponent >
+                                        <BoardContainer {...provided.droppableProps} inner={provided} color={board.color} key={board.id}  >
+                                           
+                                            <BoadHeader 
+                                                board_color={board.color}
+                                                board_length={board.tasks.length}
+                                                board_title={board.board_title}
+                                                id={board.id}
+                                                key={board.id}
 
-                                                <span>({board.tasks.length}) {board.board_title}</span>
-                                                <AddTask board_id={board.id}><FaPlus size={15}></FaPlus>Add</AddTask>
+                                            />
+ 
 
-
-                                            </KanbanBoadHeaderComponent>
-
-                                            <TaskList >
+                                            <TaskList key={uuidv4()}>
                                                 {
                                                     board.tasks.map((task, index) => {
                                                         if (task.title) {
@@ -119,10 +128,10 @@ export default function Home({ avatar_url, boards, name }: UserSchema) {
 
                                             </TaskList>
 
-                                            <TaskDialog board_id={board.id} ></TaskDialog>
+                                            <TaskDialog key={uuidv4()} board_id={board.id} ></TaskDialog>
 
 
-                                        </KanbanBoardComponent>
+                                        </BoardContainer>
 
 
                                     )}
@@ -154,6 +163,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     const { user_id } = context.query
 
 
+
     if (!session) {
         return {
             redirect: {
@@ -169,13 +179,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 
     const { user } = AuthenticatedData.data
 
-    // if(!user){
-    //     return {
-    //         props:{
 
-    //         }
-    //     }
-    // }
     return {
         props: {
             expires: session.expires,

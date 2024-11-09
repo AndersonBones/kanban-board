@@ -7,6 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Eye, EyeSlash } from "phosphor-react"
 import { useRouter } from "next/navigation"
+import { clientAxios } from "@/lib/axios"
+import { headers } from "next/headers"
+import { AxiosError } from "axios"
 
 
 
@@ -61,8 +64,28 @@ export default function SignupForm() {
     }
 
 
-    const handleSignup = (data:SignupCredentials)=>{
-        console.log(data)
+    const handleSignup = async (data:SignupCredentials)=>{
+
+  
+        try {
+            const response = await clientAxios.post("/user/register",{
+                name:data.name,
+                email:data.email,
+                password:data.password
+                
+            })
+
+            const {status, user} = response.data
+
+            console.log(user)
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+
+                alert(error?.response?.data?.error)
+                return
+            }
+        }
     
     }
 

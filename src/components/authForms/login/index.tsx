@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Eye, EyeSlash } from "phosphor-react"
 import { useRouter } from "next/router"
+import { signIn, useSession } from "next-auth/react"
 
 const loginCredentialsSchema = z.object({
     email:z.string()
@@ -44,10 +45,15 @@ export default function LoginForm() {
   
     const handleLogin = ( {email, password}:LoginCredentials)=>{
     
-        console.log(email, password)
+        signIn('credentials',{
+            email,
+            password
+        })
      
         
     }
+
+
     return (
         <AuthForm onSubmit={handleSubmit(handleLogin)}>
             <AuthCredentials>

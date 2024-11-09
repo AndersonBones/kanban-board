@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Container } from "./styles";
-import { Footer } from "../footer";
+import { Footer } from "../kanban/Footer";
 import React from "react";
 
 interface LayoutProps {
